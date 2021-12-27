@@ -1,15 +1,9 @@
-# hugo-action-build-audit
+# Hugo Build-Audit GitHub Action
 GitHub action to checkout, build, and audit a Hugo site
 
 ## Status
 
-### Main
-
-![test-build-audit](https://github.com/danielfdickinson/hugo-action-build-audit/actions/workflows/test-build-audit.yml/badge.svg)
-
-### Pull Request
-
-![test-build-audit PR](https://github.com/danielfdickinson/hugo-action-build-audit/actions/workflows/test-build-audit.yml/badge.svg?event=pull_request)
+![Test Build-Audit](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml/badge.svg)
 
 ## Details
 
@@ -31,7 +25,7 @@ Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t
 | hugo-cache-directory | Where to place the Hugo module cache, under the code-directory | true | hugo_cache
 | hugo-env | Hugo environment (production, development, etc) | true | production |
 | hugo-extended | Hugo Extended | true | true |
-| hugo-version | Hugo Version | true | 0.89.4 |
+| hugo-version | Hugo Version | true | 'latest' |
 | image-formats | Image formats to include in resource hash key | true | ['webp', 'svg', 'png', 'jpg', 'jpeg','gif', 'tiff', 'tif', 'bmp'] |
 | output-directory | Location of the site output by Hugo, relative to the workspace | true | public |
 | repo-directory | Where to checkout the repo, under the code-directory | true | repo |
@@ -59,7 +53,8 @@ on:
   push:
     branches:
       - main
-      - staging-**
+      - 'feature**'
+      - 'staging**'
     paths-ignore:
       - 'README.md'
       - 'LICENSE'
@@ -71,7 +66,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: "Build Site with Hugo and Audit"
-        uses: danielfdickinson/hugo-action-build-audit@v0.1.1
+        uses: danielfdickinson/build-audit-action-hugo-dfd@v0.1.0
         with:
           upload-site-as: unminified-site
           use-lfs: true
@@ -81,14 +76,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: "Validate site HTML"
-        uses: danielfdickinson/hugo-action-html-validate@v0.1.1
+        uses: danielfdickinson/validate-html-action-hugo-dfd@v0.1.0
   check-links:
     needs: build-unminified-site
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: "Check internal links"
-        uses: danielfdickinson/hugo-action-check-links@v0.1.1
+        uses: danielfdickinson/link-check-action-hugo-dfd@v0.1.0
         with:
           canonical-root: https://www.example.com/
 ```

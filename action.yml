@@ -1,4 +1,4 @@
-name: "Hugo Build & Audit"
+name: "DFD Hugo Build & Audit"
 author: "Daniel F. Dickinson"
 description: "Checkout, build, and audit a Hugo site"
 branding:
