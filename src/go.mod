@@ -1,5 +1,5 @@
-module github.com/danielfdickinson.ca/hugo-actions-build-audit/src
+module github.com/danielfdickinson.ca/hugo-actions-build-audit-dfd/src
 
 go 1.17
 
-require github.com/danielfdickinson/hugo-minimal-test v0.1.0 // indirect
+require github.com/danielfdickinson/minimal-test-theme-hugo-dfd v0.1.0 // indirect
