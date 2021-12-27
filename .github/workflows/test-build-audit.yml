@@ -1,0 +1,37 @@
+name: test-build-audit
+on:
+  pull_request:
+    types:
+      - assigned
+      - opened
+      - synchronize
+      - reopened
+  push:
+    branches:
+      - 'feature**'
+      - main
+      - 'staging**'
+    paths-ignore:
+      - 'README.md'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.vscode'
+      - 'scripts'
+jobs:
+  audit-only:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run hugo-action-build-audit from src dir to public
+        uses: ./
+        with:
+          source-directory: src
+  create-artifact:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run hugo-action-build-audit from src dir to public
+        uses: ./
+        with:
+          source-directory: src
+          upload-site-as: unminified-site

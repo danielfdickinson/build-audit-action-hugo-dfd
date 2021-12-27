@@ -1,0 +1,4 @@
+baseURL = 'http://example.org/'
+languageCode = 'en-ca'
+title = 'Hugo action test site'
+theme = 'github.com/danielfdickinson/hugo-minimal-test'

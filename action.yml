@@ -1,0 +1,156 @@
+name: "Hugo Build & Audit"
+author: "Daniel F. Dickinson"
+description: "Checkout, build, and audit a Hugo site"
+branding:
+  color: blue
+  icon: thumbs-up
+inputs:
+  checkout-fetch-depth:
+    description: "Fetch depth: Use 0 to fetch all history if using .GitInfo or .Lastmod"
+    required: true
+    default: "0"
+  checkout-submodules:
+    description: "Fetch git submodules: false, true, or recursive"
+    required: true
+    default: "false"
+  code-directory:
+    description: "Directory under which repo and modules will live"
+    required: true
+    default: ${{ github.workspace }}/code
+  do-minify:
+    description: "If present, minify site using --minify during build"
+    required: false
+  hugo-cache-directory:
+    description: "Where to place the Hugo module cache, under the code-directory"
+    required: true
+    default: hugo_cache
+  hugo-env:
+    description: "Hugo environment (production, development, etc)"
+    required: true
+    default: "production"
+  hugo-extended:
+    description: "Hugo Extended"
+    required: true
+    default: "true"
+  hugo-version:
+    description: "Hugo Version"
+    required: true
+    default: "0.89.4"
+  image-formats:
+    description: "Image formats to include in resource hash key"
+    required: true
+    default: "['webp', 'svg', 'png', 'jpg', 'jpeg','gif', 'tiff', 'tif', 'bmp']"
+  output-directory:
+    description: "Location of the site output by Hugo, relative to the workspace"
+    required: true
+    default: "public"
+  repo-directory:
+    description: "Where to checkout the repo, under the code-directory"
+    required: true
+    default: repo
+  source-directory:
+    description: "Where the source for the site lives, within the repo"
+    required: false
+  upload-site-as:
+    description: "Artifact to create containing the Hugo site"
+    required: false
+  upload-site-filename:
+    description: "Filename for tarball of site to upload to artifact"
+    required: true
+    default: hugo-site.tar
+  upload-site-retention:
+    description: "Retention period in days for Hugo site artifact"
+    required: true
+    default: "1"
+  use-lfs:
+    description: "Use LFS when checking out out repo"
+    required: true
+    default: "false"
+runs:
+  # TODO: Convert to JavaScript runner
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: ${{ inputs.checkout-fetch-depth }}
+        lfs: ${{ inputs.use-lfs }}
+        path: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}
+        submodules: ${{ inputs.submodules }}
+    - name: "Install Hugo"
+      uses: peaceiris/actions-hugo@v2
+      with:
+        hugo-version: ${{ inputs.hugo-version }}
+        extended: ${{ inputs.hugo-extended }}
+    - name: "Hugo modules cache"
+      uses: actions/cache@v2
+      env:
+        modules-hash: ${{ hashFiles(format('{0}/{1}', inputs.code-directory, '/**/go.sum')) }}
+      with:
+        path: ${{ inputs.code-directory}}/${{ inputs.hugo-cache-directory }}
+        key: ${{ runner.os }}-hugomod-${{ env.modules-hash }}
+        restore-keys: |
+          ${{ runner.os }}-hugomod-
+    - name: "Pull Hugo modules before calculating resources"
+      shell: bash
+      env:
+        HUGO_CACHEDIR: ${{ inputs.code-directory }}/${{ inputs.hugo-cache-directory }}
+        SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
+      run: hugo mod tidy --source ${SOURCE_DIRECTORY}
+    - name: "Create resources manifest"
+      env:
+        HUGO_CACHEDIR: ${{ inputs.code-directory }}/${{ inputs.hugo-cache-directory }}
+        IMAGE_PATHS: ${{ join(fromJSON(inputs.image-formats), ''' -o -name ''*.') }}
+        SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
+      shell: bash
+      run: |
+        echo "resources_hash=$(echo $(find ${HUGO_CACHEDIR} ${SOURCE_DIRECTORY} -path '**assets/**')$(find ${SOURCE_DIRECTORY}/content -name '*.${{ env.IMAGE_PATHS }}') | sort | sha256sum - | cut -f1 -d' ')" >> $GITHUB_ENV
+    - name: "Hugo resources cache"
+      uses: actions/cache@v2
+      with:
+        path: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}/resources
+        key: ${{ runner.os }}-hugoresources-${{ env.resources_hash }}
+        restore-keys: |
+          ${{ runner.os }}-hugoresources-
+          ${{ runner.os }}-hugoresources
+    - name: "Build site so it is suitable for auditing"
+      shell: bash
+      env:
+        DO_MINIFY: ${{ inputs.do-minify }}
+        HUGO_CACHEDIR: ${{ inputs.code-directory }}/${{ inputs.hugo-cache-directory }}
+        HUGO_ENABLEMISSINGTRANSLATIONPLACEHOLDERS: "true"
+        HUGO_ENV: ${{ inputs.hugo-env }}
+        HUGO_MINIFY_TDEWOLFF_HTML_KEEPCOMMENTS: "true"
+        OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
+        SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
+      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
+    - name: "Audit site for missed Hugo issues"
+      shell: bash
+      env:
+        OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
+      run: if test "$(grep -iIvrnE 'grep(.+(-- raw HTML omitted --|ZgotmplZ|hahahugo|\\\[i18n\\\])+)' "${OUTPUT_DIRECTORY}" | grep -iIoE '<\!-- raw HTML omitted -->|ZgotmplZ|hahahugo|\[i18n\]')" != ""; then echo "not ok"; exit 1; else echo "ok"; exit 0; fi
+    - name: "Build site omitting information needed only to audit"
+      if: inputs.upload-site-as
+      shell: bash
+      env:
+        DO_MINIFY: ${{ inputs.do-minify }}
+        HUGO_CACHEDIR: ${{ inputs.code-directory }}/${{ inputs.hugo-cache-directory }}
+        HUGO_ENV: ${{ inputs.hugo-env }}
+        OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
+        SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
+      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
+    - name: "Bundle site for upload as artifact"
+      if: inputs.upload-site-as
+      shell: bash
+      env:
+        BASE_DIRECTORY: ${{ github.workspace }}
+        OUTPUT_DIRECTORY: ${{ inputs.output-directory }}
+        UPLOAD_FILENAME: ${{ inputs.upload-site-filename }}
+      run: tar -C "${BASE_DIRECTORY}" -cf "${UPLOAD_FILENAME}" "${OUTPUT_DIRECTORY}"
+    - name: "Upload site as an artifact"
+      uses: actions/upload-artifact@v2
+      if: inputs.upload-site-as
+      with:
+        name: ${{ inputs.upload-site-as }}
+        path: hugo-site.tar
+        if-no-files-found: error
+        retention-days: ${{ inputs.upload-site-retention }}
