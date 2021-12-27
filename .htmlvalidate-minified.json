@@ -1,0 +1,12 @@
+{
+    "root": true,
+    "extends": [
+        "html-validate:recommended",
+        "html-validate:document"
+    ],
+    "rules": {
+        "require-sri": "off",
+        "attr-quotes": "off",
+        "doctype-style": "off"
+    }
+}
