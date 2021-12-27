@@ -107,7 +107,7 @@ runs:
     - name: "Hugo resources cache"
       uses: actions/cache@v2
       with:
-        path: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}/resources
+        path: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         key: ${{ runner.os }}-hugoresources-${{ env.resources_hash }}
         restore-keys: |
           ${{ runner.os }}-hugoresources-
@@ -120,6 +120,7 @@ runs:
         HUGO_ENABLEMISSINGTRANSLATIONPLACEHOLDERS: "true"
         HUGO_ENV: ${{ inputs.hugo-env }}
         HUGO_MINIFY_TDEWOLFF_HTML_KEEPCOMMENTS: "true"
+        HUGO_RESOURCEDIR: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
         SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
       run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
@@ -135,6 +136,7 @@ runs:
         DO_MINIFY: ${{ inputs.do-minify }}
         HUGO_CACHEDIR: ${{ inputs.code-directory }}/${{ inputs.hugo-cache-directory }}
         HUGO_ENV: ${{ inputs.hugo-env }}
+        HUGO_RESOURCEDIR: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
         SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
       run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
