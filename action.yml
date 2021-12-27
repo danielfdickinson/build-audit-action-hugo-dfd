@@ -35,7 +35,7 @@ inputs:
   hugo-version:
     description: "Hugo Version"
     required: true
-    default: "0.89.4"
+    default: "latest"
   image-formats:
     description: "Image formats to include in resource hash key"
     required: true
