@@ -128,7 +128,7 @@ runs:
       shell: bash
       env:
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
-      run: if ! grep -iIrnoE '<\!-- raw HTML omitted -->|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)|\(&lt;nil&gt;\)' ${OUTPUT_DIRECTORY} >hugo-audit.log then RET=$?; fi; if test "$RET" = "2"; then echo "not ok"; exit 1; fi
+      run: if ! grep -iIrnoE '<\!-- raw HTML omitted -->|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)|\(&lt;nil&gt;\)' ${OUTPUT_DIRECTORY} >hugo-audit.log; then RET=$?; fi; if test "$RET" = "2"; then echo "not ok"; exit 1; fi
     - name: "Audit site for missed Hugo issues (step 2)"
       shell: bash
       env:
