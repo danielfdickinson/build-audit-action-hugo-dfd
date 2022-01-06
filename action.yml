@@ -133,7 +133,7 @@ runs:
       shell: bash
       env:
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
-      run: if test -s hugo-audit.log; then RET2=2; { grep -iIvE 'grep(.+(-- raw HTML omitted --|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)\|(&lt;nil&gt;\))+)' hugo-audit.log; RET2=$?; } || true; if test "$RET2" != "1"; then echo "not ok"; exit 1; else echo "ok"; exit 0; else "ok"; exit 0; fi
+      run: if test -s hugo-audit.log; then RET2=2; { { grep -iIvE 'grep(.+(-- raw HTML omitted --|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)\|(&lt;nil&gt;\))+)' hugo-audit.log; RET2=$?; } || true; }; if test "$RET2" != "1"; then echo "not ok"; exit 1; else echo "ok"; exit 0; else "ok"; exit 0; fi
     - name: "Build site omitting information needed only to audit"
       if: inputs.upload-site-as
       shell: bash
