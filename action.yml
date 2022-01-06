@@ -128,12 +128,12 @@ runs:
       shell: bash
       env:
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
-      run: grep -iIrnoE "<\!-- raw HTML omitted -->|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)|(&lt;nil&gt;)" ${OUTPUT_DIRECTORY} >hugo-audit.log; RET=$?; if test "$RET" = "2"; then echo "not ok"; exit 1; fi
+      run: grep -iIrnoE '<\!-- raw HTML omitted -->|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)|(&lt;nil&gt;)' ${OUTPUT_DIRECTORY} >hugo-audit.log; RET=$?; if test "$RET" = "2"; then echo "not ok"; exit 1; fi
     - name: "Audit site for missed Hugo issues (step 2)"
       shell: bash
       env:
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
-      run: if test -s hugo-audit.log; then grep -iIvE "grep(.+(-- raw HTML omitted --|ZgotmplZ|hahahugo|\\\[i18n\\\]|\\\(<nil>\\\)|(&lt;nil&gt;))+)" hugo-audit.log; RET2=$?; if test "$RET2" != "1"; then echo "not ok"; exit 1; else echo "ok"; exit 0; else "ok"; exit 0; fi
+      run: if test -s hugo-audit.log; then grep -iIvE 'grep(.+(-- raw HTML omitted --|ZgotmplZ|hahahugo|\[i18n\]|\(<nil>\)|(&lt;nil&gt;))+)' hugo-audit.log; RET2=$?; if test "$RET2" != "1"; then echo "not ok"; exit 1; else echo "ok"; exit 0; else "ok"; exit 0; fi
     - name: "Build site omitting information needed only to audit"
       if: inputs.upload-site-as
       shell: bash
