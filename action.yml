@@ -70,7 +70,7 @@ runs:
   # TODO: Convert to JavaScript runner
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.5
       with:
         fetch-depth: ${{ inputs.checkout-fetch-depth }}
         lfs: ${{ inputs.use-lfs }}
@@ -82,7 +82,7 @@ runs:
         hugo-version: ${{ inputs.hugo-version }}
         extended: ${{ inputs.hugo-extended }}
     - name: "Hugo modules cache"
-      uses: actions/cache@v2.3.5
+      uses: actions/cache@v2
       env:
         modules-hash: ${{ hashFiles(format('{0}/{1}', inputs.code-directory, '/**/go.sum')) }}
       with:
