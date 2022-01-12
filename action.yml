@@ -82,7 +82,7 @@ runs:
         hugo-version: ${{ inputs.hugo-version }}
         extended: ${{ inputs.hugo-extended }}
     - name: "Hugo modules cache"
-      uses: actions/cache@v2
+      uses: actions/cache@v2.3.5
       env:
         modules-hash: ${{ hashFiles(format('{0}/{1}', inputs.code-directory, '/**/go.sum')) }}
       with:
