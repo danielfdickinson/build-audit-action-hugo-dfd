@@ -2,4 +2,4 @@ module github.com/danielfdickinson.ca/hugo-actions-build-audit-dfd/src
 
 go 1.17
 
-require github.com/danielfdickinson/minimal-test-theme-hugo-dfd v0.1.1 // indirect
+require github.com/danielfdickinson/minimal-test-theme-hugo-dfd v0.2.4 // indirect
