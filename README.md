@@ -5,15 +5,11 @@ GitHub action to checkout, build, and audit a Hugo site
 
 ![Test Build-Audit](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml/badge.svg)
 
-## Details
-
-**NB**: Currently experimental and not for public consumption. Use at your own risk.
-
 ### Purpose
 
 Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t/audit-your-published-site-for-problems/35184/8). Optionally generate an artifact for use by other jobs in a GitHub Actions Workflow (e.g. for other tests or deployment).
 
-### Inputs
+### Action Inputs Variables
 
 
 | Input | Description | Req'd | Default |
@@ -35,7 +31,7 @@ Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t
 | upload-site-retention | Retention period in days for Hugo site artifact | true | 1 |
 | use-lfs | Use LFS when checking out out repo | true | false |
 
-### Outputs
+### Action Outputs Variables
 
 None
 
@@ -66,7 +62,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: "Build Site with Hugo and Audit"
-        uses: danielfdickinson/build-audit-action-hugo-dfd@v0.1.1
+        uses: danielfdickinson/build-audit-action-hugo-dfd@v0.2.0
         with:
           upload-site-as: unminified-site
           use-lfs: true
@@ -76,14 +72,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: "Validate site HTML"
-        uses: danielfdickinson/validate-html-action-hugo-dfd@v0.1.1
+        uses: danielfdickinson/validate-html-action-hugo-dfd@v0.2.0-beta.1
   check-links:
     needs: build-unminified-site
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
       - name: "Check internal links"
-        uses: danielfdickinson/link-check-action-hugo-dfd@v0.1.2
+        uses: danielfdickinson/link-check-action-hugo-dfd@v0.2.0-beta.1
         with:
           canonical-root: https://www.example.com/
 ```

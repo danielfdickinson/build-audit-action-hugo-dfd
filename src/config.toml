@@ -1,5 +1,5 @@
 baseURL = 'http://example.org/'
-languageCode = 'en-ca'
+languageCode = 'en'
 title = 'Hugo action test site'
 theme = 'github.com/danielfdickinson/minimal-test-theme-hugo-dfd'
 copyright = '© 2021-2022 Daniel F. Dickinson'
