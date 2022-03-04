@@ -5,6 +5,7 @@
         "html-validate:document"
     ],
     "rules": {
-        "require-sri": "off"
+        "require-sri": "off",
+        "no-inline-style": "off"
     }
 }
