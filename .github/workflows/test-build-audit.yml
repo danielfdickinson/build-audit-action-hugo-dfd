@@ -25,7 +25,7 @@ jobs:
       - name: Run build-audit-action-hugo-dfd from src dir to public
         uses: ./
         with:
-          source-directory: src
+          source-directory: exampleSite
   create-artifact:
     runs-on: ubuntu-20.04
     steps:
@@ -33,5 +33,5 @@ jobs:
       - name: Run hugo-action-build-audit from src dir to public
         uses: ./
         with:
-          source-directory: src
+          source-directory: exampleSite
           upload-site-as: unminified-site
