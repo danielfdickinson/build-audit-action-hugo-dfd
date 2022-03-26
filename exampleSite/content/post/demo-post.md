@@ -32,7 +32,9 @@ Just to make sure the site works and audit check doesn't fail when there is cont
    
    exit "$RET"
    ```
+
    ``_scripts/hugo-serve``
+
    ```bash
    #!/bin/bash
    

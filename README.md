@@ -1,4 +1,5 @@
 # Hugo Build-Audit GitHub Action
+
 GitHub action to checkout, build, and audit a Hugo site
 
 ## Status
@@ -10,7 +11,6 @@ GitHub action to checkout, build, and audit a Hugo site
 Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t/audit-your-published-site-for-problems/35184/8). Optionally generate an artifact for use by other jobs in a GitHub Actions Workflow (e.g. for other tests or deployment).
 
 ### Action Inputs Variables
-
 
 | Input | Description | Req'd | Default |
 |-------|-------------|-------|---------|
