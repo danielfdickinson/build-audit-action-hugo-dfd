@@ -4,7 +4,7 @@ GitHub action to checkout, build, and audit a Hugo site
 
 ## Status
 
-![Test Build-Audit](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml/badge.svg)
+[![test-build-audit](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml/badge.svg)](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml)
 
 ### Purpose
 
