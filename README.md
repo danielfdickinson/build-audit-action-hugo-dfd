@@ -1,4 +1,4 @@
-# Hugo Build-Audit GitHub Action
+# Hugo build-audit GitHub Action
 
 GitHub action to checkout, build, and audit a Hugo site
 
@@ -6,11 +6,15 @@ GitHub action to checkout, build, and audit a Hugo site
 
 [![test-build-audit](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml/badge.svg)](https://github.com/danielfdickinson/build-audit-action-hugo-dfd/actions/workflows/test-build-audit.yml)
 
+## GitHub repository
+
+<https://github.com/danielfdickinson/build-audit-action-hugo-dfd>
+
 ### Purpose
 
 Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t/audit-your-published-site-for-problems/35184/8). Optionally generate an artifact for use by other jobs in a GitHub Actions Workflow (e.g. for other tests or deployment).
 
-### Action Inputs Variables
+### Action inputs variables
 
 | Input | Description | Req'd | Default |
 |-------|-------------|-------|---------|
@@ -31,7 +35,7 @@ Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t
 | upload-site-retention | Retention period in days for Hugo site artifact | true | 1 |
 | use-lfs | Use LFS when checking out out repo | true | false |
 
-### Action Outputs Variables
+### Action outputs variables
 
 None
 
@@ -49,20 +53,12 @@ on:
   push:
     branches:
       - main
-      - 'feature**'
-      - 'staging**'
-    paths-ignore:
-      - 'README.md'
-      - 'LICENSE'
-      - '.gitignore'
-      - '.vscode'
-      - 'scripts'
 jobs:
   build-unminified-site:
     runs-on: ubuntu-20.04
     steps:
       - name: "Build Site with Hugo and Audit"
-        uses: danielfdickinson/build-audit-action-hugo-dfd@v0.2.1-beta.1
+        uses: danielfdickinson/build-audit-action-hugo-dfd@v0.2
         with:
           upload-site-as: unminified-site
           use-lfs: true
@@ -70,16 +66,16 @@ jobs:
     needs: build-unminified-site
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "Validate site HTML"
-        uses: danielfdickinson/validate-html-action-hugo-dfd@v0.2.2-beta.2
+        uses: danielfdickinson/validate-html-action-hugo-dfd@v0.2
   check-links:
     needs: build-unminified-site
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: "Check internal links"
-        uses: danielfdickinson/link-check-action-hugo-dfd@v0.2.5-beta.2
+        uses: danielfdickinson/link-check-action-hugo-dfd@v0.2
         with:
           canonical-root: https://www.example.com/
 ```
