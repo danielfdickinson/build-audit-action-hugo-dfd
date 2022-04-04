@@ -70,7 +70,7 @@ runs:
   # TODO: Convert to JavaScript runner
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: ${{ inputs.checkout-fetch-depth }}
         lfs: ${{ inputs.use-lfs }}
@@ -82,7 +82,7 @@ runs:
         hugo-version: ${{ inputs.hugo-version }}
         extended: ${{ inputs.hugo-extended }}
     - name: "Hugo modules cache"
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       env:
         modules-hash: ${{ hashFiles(format('{0}/{1}', inputs.code-directory, '/**/go.sum')) }}
       with:
@@ -105,7 +105,7 @@ runs:
       run: |
         echo "resources_hash=$(echo $(find ${HUGO_CACHEDIR} ${SOURCE_DIRECTORY} -path '**assets/**')$(find ${SOURCE_DIRECTORY}/content -name '*.${{ env.IMAGE_PATHS }}') | sort | sha256sum - | cut -f1 -d' ')" >> $GITHUB_ENV
     - name: "Hugo resources cache"
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         key: ${{ runner.os }}-hugoresources-${{ env.resources_hash }}
@@ -156,7 +156,7 @@ runs:
         UPLOAD_FILENAME: ${{ inputs.upload-site-filename }}
       run: tar -C "${BASE_DIRECTORY}" -cf "${UPLOAD_FILENAME}" "${OUTPUT_DIRECTORY}"
     - name: "Upload site as an artifact"
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       if: inputs.upload-site-as
       with:
         name: ${{ inputs.upload-site-as }}
