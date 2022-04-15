@@ -123,7 +123,7 @@ runs:
         HUGO_RESOURCEDIR: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
         SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
-      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
+      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --cleanDestinationDir ${DO_MINIFY:+--minify}
     - name: "Audit site for missed Hugo issues (step 1)"
       shell: bash
       env:
@@ -146,7 +146,7 @@ runs:
         HUGO_RESOURCEDIR: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
         SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
-      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
+      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --cleanDestinationDir ${DO_MINIFY:+--minify}
     - name: "Bundle site for upload as artifact"
       if: inputs.upload-site-as
       shell: bash
