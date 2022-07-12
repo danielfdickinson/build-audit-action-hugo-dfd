@@ -5,6 +5,9 @@ branding:
   color: blue
   icon: thumbs-up
 inputs:
+  base-url:
+    description: "Set baseURL for the build"
+    required: false
   checkout-fetch-depth:
     description: "Fetch depth: Use 0 to fetch all history if using .GitInfo or .Lastmod"
     required: true
@@ -123,7 +126,8 @@ runs:
         HUGO_RESOURCEDIR: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
         SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
-      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
+        BASEURL: ${{ inputs.base-url }}
+      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify} ${BASEURL:+-b $BASEURL}
     - name: "Audit site for missed Hugo issues (step 1)"
       shell: bash
       env:
@@ -146,7 +150,8 @@ runs:
         HUGO_RESOURCEDIR: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/resources
         OUTPUT_DIRECTORY: ${{ github.workspace }}/${{ inputs.output-directory }}
         SOURCE_DIRECTORY: ${{ inputs.code-directory }}/${{ inputs.repo-directory }}/${{ inputs.source-directory }}
-      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify}
+        BASEURL: ${{ inputs.base-url }}
+      run: hugo --source "${SOURCE_DIRECTORY}" --destination "${OUTPUT_DIRECTORY}" --gc --cleanDestinationDir ${DO_MINIFY:+--minify} ${BASEURL:+-b $BASEURL}
     - name: "Bundle site for upload as artifact"
       if: inputs.upload-site-as
       shell: bash

@@ -33,6 +33,7 @@ jobs:
       - name: Run build-audit-action-hugo-dfd from src dir to public
         uses: ./
         with:
+          base-url: https://example.com/
           source-directory: exampleSite
   create-artifact:
     needs: check-source-code-validity
