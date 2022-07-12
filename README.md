@@ -14,10 +14,15 @@ GitHub action to checkout, build, and audit a Hugo site
 
 Build a Hugo website and [audit for silent errors](https://discourse.gohugo.io/t/audit-your-published-site-for-problems/35184/8). Optionally generate an artifact for use by other jobs in a GitHub Actions Workflow (e.g. for other tests or deployment).
 
+### Exclusion
+
+Due to a bug in Hugo 0.97.0, Hugo version 0.97.0 is not supported by this action.
+
 ### Action inputs variables
 
 | Input | Description | Req'd | Default |
 |-------|-------------|-------|---------|
+| base-url | Set the baseURL for the site (for this build only) | false | |
 | checkout-fetch-depth | Fetch depth: Use 0 to fetch all history if using .GitInfo or .Lastmod | true | 0 |
 | checkout-submodules | Fetch git submodules: false, true, or recursive | true | false |
 | code-directory | Directory under which repo and modules will live | true | ${{ github.workspace }}/code |
@@ -60,6 +65,7 @@ jobs:
       - name: "Build Site with Hugo and Audit"
         uses: danielfdickinson/build-audit-action-hugo-dfd@v0.2
         with:
+          base-url: https://www.example.com/
           upload-site-as: unminified-site
           use-lfs: true
   validate-unminified-html:
